@@ -7,7 +7,6 @@ import './styles/App.css';
 function App() {
   return (
     <div className="app">
-      <h1>QuickCart</h1>
       <Header />
       <main className="main-content">
         <ProductList products={products} />
@@ -15,3 +14,5 @@ function App() {
     </div>
   );
 }
+
+export default App;
