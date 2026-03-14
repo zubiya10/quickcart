@@ -1,92 +1,82 @@
+import { useCart } from "../hooks/useCart";
 import "../styles/CartSidebar.css";
 
-function CartSidebar({
-  isOpen,
-  cart,
-  onClose,
-  onIncrease,
-  onDecrease,
-  onRemove,
-  totalPrice
-}) {
+function CartSidebar() {
+
+  const {
+    cart = [],
+    isCartOpen,
+    toggleCart,
+    updateQuantity,
+    removeFromCart,
+    getTotalPrice
+  } = useCart();
+
+  if (!isCartOpen) return null;
 
   return (
+    <div className="cart-sidebar">
 
-    <div className={`cart-sidebar ${isOpen ? "open" : ""}`}>
+      <button className="close-btn" onClick={toggleCart}>Close</button>
 
-      <div className="cart-header">
-
-        <h2>Your Cart</h2>
-
-        <button onClick={onClose}>X</button>
-
-      </div>
+      <h2>Your Cart</h2>
 
       {cart.length === 0 ? (
-
-        <p className="empty">
-          Your cart is empty
-        </p>
-
+        <p>Your cart is empty</p>
       ) : (
+        cart.map(item => (
+          <div key={item.id} className="cart-item">
 
-        <>
+            {/* Product Image */}
+            <img
+              src={item.image}
+              alt={item.name}
+              className="cart-image"
+            />
 
-          {cart.map(item => (
+            <div className="cart-details">
 
-            <div key={item.id} className="cart-item">
+              <h4>{item.name}</h4>
+              <p className="cart-price">${item.price}</p>
 
-              <img src={item.image} alt={item.name} />
-
-              <div className="cart-info">
-
-                <h4>{item.name}</h4>
-
-                <p>${item.price}</p>
-
-                <div className="qty-controls">
-
-                  <button
-                    onClick={() => onDecrease(item.id)}
-                  >
-                    -
-                  </button>
-
-                  <span>{item.quantity}</span>
-
-                  <button
-                    onClick={() => onIncrease(item.id)}
-                  >
-                    +
-                  </button>
-
-                </div>
-
+              <div className="qty-controls">
                 <button
-                  className="remove-btn"
-                  onClick={() => onRemove(item.id)}
+                  onClick={() =>
+                    updateQuantity(item.id, item.quantity - 1)
+                  }
                 >
-                  Remove
+                  -
                 </button>
 
+                <span>{item.quantity}</span>
+
+                <button
+                  onClick={() =>
+                    updateQuantity(item.id, item.quantity + 1)
+                  }
+                >
+                  +
+                </button>
               </div>
 
+              <button
+                className="remove-btn"
+                onClick={() => removeFromCart(item.id)}
+              >
+                Remove
+              </button>
+
             </div>
-
-          ))}
-
-          <h3 className="total">
-            Total: ${totalPrice}
-          </h3>
-
-        </>
-
+          </div>
+        ))
       )}
 
+      <h3 className="cart-total">
+        Total: ${getTotalPrice()}
+      </h3>
+
     </div>
-
   );
-
 }
 
 export default CartSidebar;
